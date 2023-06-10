@@ -94,37 +94,52 @@ typedef struct SmdFileHandle {
 
 } SmdFileHandle;
 
+#define smdAllocateFileHandle() ((SmdFileHandle*)calloc(1, sizeof(SmdFileHandle)))
 
 
-typedef char* SmdAccessTree[SMD_VAR_MAX_HIERARCY_LENGTH];
-
-
-
-uint8_t smdReadFile(
-	const char* src_path,
+extern uint8_t smdReadFile(
+	const char*    src_path,
 	SmdFileHandle*  p_handle
 );
 
-uint8_t smdParseMemory(
+extern uint8_t smdParseMemory(
 	SmdFileHandle* p_handle
 );
 
-uint8_t smdAccessVarByRegion(
-	uint32_t offset,
-	uint32_t range,
-	void* p_dst
+extern uint8_t smdDebugPrint(
+	SmdFileHandle* p_handle,
+	uint8_t        print_all
 );
 
-uint8_t smdAccessVarByAccessTree(
-	SmdAccessTree tree,
-	void*         p_dst
+extern uint8_t smdAccessVarByRegion(
+	SmdFileHandle* p_handle,
+	uint32_t       offset,
+	uint32_t       size,
+	void*          p_dst
 );
 
-uint8_t smdNativeExport(
-	SmdFileHandle   handle,
-	const char* dst_path
+extern uint8_t smdAccessVarByIndex(
+	SmdFileHandle* p_handle,
+	uint32_t       idx,
+	uint32_t*      p_size,
+	void*          p_dst
 );
 
+extern uint8_t smdAccessVarByName(
+	SmdFileHandle* p_handle,
+	const char*    var_name,
+	uint32_t*      p_size,
+	void*          p_dst
+);
+
+extern uint8_t smdNativeExport(
+	SmdFileHandle* p_handle,
+	const char*    dst_path
+);
+
+extern uint8_t smdFileHandleRelease(
+	SmdFileHandle* p_handle
+);
 
 
 #ifdef __cplusplus
