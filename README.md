@@ -1,2 +1,2 @@
-# shtemplate
- template repository
+# Static Memory Description
+

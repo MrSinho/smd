@@ -1,0 +1,24 @@
+MACRO    ENTITY_COUNT    --> 2 <--
+MACRO    COMPONENT_COUNT --> 5 <--
+
+MACRO    IDENTITY_IDX    --> 0 <--
+MACRO    MESH_IDX        --> 1 <--
+MACRO    QUICK_MESH_IDX  --> 2 <--
+MACRO    CAMERA_IDX      --> 3 <--
+MACRO    TRANSFORM_IDX   --> 4 <--
+
+MACRO    MAX_QUICK_MESH_VERTICES    --> 1024 <-- 
+MACRO    MAX_QUICK_MESH_INDICES     --> 1024 <--
+
+
+
+INCLUDE
+-->
+components.desc
+scene.desc
+<--
+
+
+COMMENT    creates function which orders all WRITE actions
+BUILD
+TEST

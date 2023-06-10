@@ -1,0 +1,54 @@
+STRUCT   Identity
+--> 
+STR    name
+STR    tag
+STR    subtag
+<--
+
+
+
+STRUCT      Mesh
+-->
+UINT32_T    first_vertex
+UINT32_T    vertex_count
+UINT32_T    first_index
+UINT32_T    index_count
+<--
+
+
+
+STRUCT      QuickMesh
+-->
+UINT32_T    vertex_count
+FLOAT       vertices[MAX_QUICK_MESH_VERTICES]
+UINT32_T    index_count
+UINT32_T    indices[MAX_QUICK_MESH_INDICES]
+<--
+
+
+
+STRUCT   Camera
+-->
+FLOAT    fov        
+FLOAT    nc         
+FLOAT    fc         
+FLOAT    speed      
+FLOAT    mouse_speed
+FLOAT    projection[4][4]
+FLOAT    view[4][4]
+STR      flags      
+<--
+
+
+
+STRUCT   Transform
+-->
+FLOAT    model[4][4]
+FLOAT    position[3]
+FLOAT    rotation[3]
+FLOAT    euler[3]
+FLOAT    scale[3]
+FLOAT    front[3]
+FLOAT    left[3]
+FLOAT    up[3]
+<--

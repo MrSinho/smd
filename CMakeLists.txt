@@ -5,32 +5,46 @@ add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
 #||||       ||||
 #||||PROJECT||||
 #||||       ||||
-project(shtemplate C)
+project(smd C)
 
 
 
-#||||       ||||
-#||||LIBRARY||||
-#||||       ||||
-function(build_shtemplate)
-add_library(shtemplate shtemplate/src/shtemplate.c)
-target_include_directories(shtemplate PUBLIC 
-    ${CMAKE_CURRENT_SOURCE_DIR}/shtemplate/include
+#||||          ||||
+#||||SMD NATIVE||||
+#||||          ||||
+function(build_smd_native)
+add_library(smd-native smd-native/src/smd-native.c)
+target_include_directories(smd-native PUBLIC 
+    ${CMAKE_CURRENT_SOURCE_DIR}/smd-native/include
 )
-set_target_properties(shtemplate PROPERTIES
+set_target_properties(smd-native PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
+)
+endfunction()
+
+#||||              ||||
+#||||SMD NATIVE APP||||
+#||||              ||||
+function(build_smd_native_app)
+add_executable(smd-native-app smd-native/src/smd-native-app.c)
+target_include_directories(smd-native-app PUBLIC 
+    ${CMAKE_CURRENT_SOURCE_DIR}/smd-native/include
+)
+set_target_properties(smd-native-app PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
+    VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
 )
 endfunction()
 
 
 
-#||||       ||||
-#||||SAMPLES||||
-#||||       ||||
-function(build_shtemplate_sample)
-add_executable(shtemplate-sample sample/src/shtemplate-sample.c)
-target_link_libraries(shtemplate-sample PUBLIC shtemplate)
-set_target_properties(shtemplate-sample PROPERTIES
+#||||               ||||
+#||||SMD READ SAMPLE||||
+#||||               ||||
+function(build_smd_read_sample)
+add_executable(smd-read-sample smd-read-sample/src/smd-read-sample.c)
+target_link_libraries(smd-read-sample PUBLIC smd-native)
+set_target_properties(smd-read-sample PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
     VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
 )
@@ -49,7 +63,7 @@ endif(UNIX)
 #||||     ||||
 #||||FLAGS||||
 #||||     ||||
-option(SH_TEMPLATE_BUILD_SAMPLE CACHE OFF)
+option(SMD_BUILD_SAMPLE CACHE OFF)
 
 
 
@@ -57,10 +71,11 @@ option(SH_TEMPLATE_BUILD_SAMPLE CACHE OFF)
 #||||MAIN||||
 #||||    ||||
 function(main)
-build_shtemplate()
-if (SH_TEMPLATE_BUILD_SAMPLE)
-build_shtemplate_sample()
-endif(SH_TEMPLATE_BUILD_SAMPLE)
+build_smd_native()
+build_smd_native_app()
+if (SMD_BUILD_SAMPLE)
+build_smd_read_sample()
+endif(SMD_BUILD_SAMPLE)
 endfunction()
 
 
