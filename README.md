@@ -78,7 +78,31 @@ Before declaring a new variable, end the first description with the `*` characte
 
 ## Parsing
 
-See the [smd-read-example.c](smd-read-sample/src/smd-read-sample.c) file.
+See the [smd-read-example.c](smd-read-sample/src/smd-read-sample.c) file. To access a specific variable, use the following self-explanatory functions:
+ *	```c
+	uint8_t smdAccessVarByRegion(
+		SmdFileHandle* p_handle,
+		uint32_t       offset,
+		uint32_t       size,
+		void*          p_dst
+	);
+	``` 
+ *	```c
+	uint8_t smdAccessVarByIndex(
+		SmdFileHandle* p_handle,
+		uint32_t       idx,
+		uint32_t*      p_size,
+		void*          p_dst
+	);
+	``` 
+ *	```c
+	uint8_t smdAccessVarByName(
+		SmdFileHandle* p_handle,
+		const char*    var_name,
+		uint32_t*      p_size,
+		void*          p_dst
+	);
+	```
 
 ---
 
