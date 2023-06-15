@@ -1,0 +1,11 @@
+UINT32     ^^ 1    !! entity_count               --> 2                                     *
+STR256     ^^ 1    !! identity_name              --> main                                  *
+UINT32     ^^ 1    !! mesh_vertex_count          --> 6                                     *
+FLOAT32    ^^ 6    !! mesh_vertices              --> 1.0   2.0   3.0   4.0   5.0   6.0     *
+FLOAT32    ^^ 3    !! transform_position         --> 1.1   2.2   3.3                       *
+FLOAT32    ^^ 1    !! camera_fov                 --> 75                                    *
+FLOAT32    ^^ 1    !! camera_nc                  --> 1E-20                                 *
+FLOAT32    ^^ 1    !! camera_fc                  --> 150                                   *
+FLOAT32    ^^ 1    !! camera_speed               --> 5                                     *
+FLOAT32    ^^ 1    !! camera_mouse_speed         --> 3                                     *
+STR256     ^^ 1    !! camera_flags               --> CAMERA_SETUP_FREE_FLIGHT              *

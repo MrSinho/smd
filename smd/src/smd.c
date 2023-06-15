@@ -1,0 +1,370 @@
+#ifdef __cplusplus
+extern "C" {
+#endif//__cplusplus
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+
+#include "smd/smd.h"
+
+
+#ifdef _MSC_VER
+#pragma warning (disable: 4996)
+#endif//_MSC_VER
+
+
+uint8_t smdReadFile(
+	const char* src_path,
+	SmdFileHandle*  p_handle
+) {
+	smdError(src_path == NULL, "invalid src path memory",        return 0);
+	smdError(p_handle == NULL, "invalid smd file handle memory", return 0);
+	
+	FILE*    stream = fopen(src_path, "r");
+
+	smdError(
+		stream == NULL, 
+		"invalid src file",
+		return 0
+	);
+
+	(void)fseek(stream, 0, SEEK_END);
+	p_handle->description_src_size = ftell(stream);
+	(void)fseek(stream, 0, SEEK_SET);
+
+	smdError(
+		p_handle->description_src_size == 0,
+		"invalid handle src description size",
+		return 0
+	);
+
+	p_handle->description_src = (char*)calloc(1, p_handle->description_src_size);
+
+	smdError(
+		p_handle->description_src == NULL,
+		"invalid handle src description memory", 
+		return 0
+	);
+
+	(void)fread(p_handle->description_src, 1, p_handle->description_src_size, stream);
+
+	fclose(stream);
+
+	return 1;
+}
+
+uint8_t smdParseMemory(
+	SmdFileHandle* p_handle
+) {
+	smdError(p_handle == NULL, "invalid smd file handle memory", return 0);
+	
+	smdError(
+		p_handle->description_src_size == 0,
+		"invalid src description size",
+		return 0;
+	);
+
+	smdError(
+		p_handle->description_src == NULL,
+		"invalid src description memory",
+		return 0
+	);
+
+	uint32_t write_var_idx       = 0;
+	uint32_t var_idx             = 0;
+	uint32_t write_memory_offset = 0;
+
+	for (uint8_t write_memory = 0; write_memory < 2; write_memory++) {
+		for (uint32_t char_idx = 0; char_idx < p_handle->description_src_size; char_idx++) {
+			char* p_first_char = &p_handle->description_src[char_idx];
+
+			//
+			//NEW VARIABLES
+			//
+			     SMD_CHECK_VAR_TYPE(p_first_char, char_idx, var_idx, write_memory, write_var_idx, p_handle, INT8,     1)
+			else SMD_CHECK_VAR_TYPE(p_first_char, char_idx, var_idx, write_memory, write_var_idx, p_handle, UINT8,    1)
+			else SMD_CHECK_VAR_TYPE(p_first_char, char_idx, var_idx, write_memory, write_var_idx, p_handle, INT16,    2)
+			else SMD_CHECK_VAR_TYPE(p_first_char, char_idx, var_idx, write_memory, write_var_idx, p_handle, UINT16,   2)
+			else SMD_CHECK_VAR_TYPE(p_first_char, char_idx, var_idx, write_memory, write_var_idx, p_handle, INT32,    4)
+			else SMD_CHECK_VAR_TYPE(p_first_char, char_idx, var_idx, write_memory, write_var_idx, p_handle, UINT32,   4)
+			else SMD_CHECK_VAR_TYPE(p_first_char, char_idx, var_idx, write_memory, write_var_idx, p_handle, INT64,    8)
+			else SMD_CHECK_VAR_TYPE(p_first_char, char_idx, var_idx, write_memory, write_var_idx, p_handle, UINT64,   8)
+
+			else SMD_CHECK_VAR_TYPE(p_first_char, char_idx, var_idx, write_memory, write_var_idx, p_handle, FLOAT32,  4)
+			else SMD_CHECK_VAR_TYPE(p_first_char, char_idx, var_idx, write_memory, write_var_idx, p_handle, DOUBLE64, 8)
+
+			else SMD_CHECK_VAR_TYPE(p_first_char, char_idx, var_idx, write_memory, write_var_idx, p_handle, STR128,  16)
+			else SMD_CHECK_VAR_TYPE(p_first_char, char_idx, var_idx, write_memory, write_var_idx, p_handle, STR256,  32)
+			else SMD_CHECK_VAR_TYPE(p_first_char, char_idx, var_idx, write_memory, write_var_idx, p_handle, STR512,  64)
+			else SMD_CHECK_VAR_TYPE(p_first_char, char_idx, var_idx, write_memory, write_var_idx, p_handle, STR1024, 128)
+
+			//
+			//MEMORY LENGTH
+			//
+			if (
+				(p_handle->description_src_size - char_idx) > SMD_VAR_LENGTH_BLOCK_LENGTH &&
+				memcmp(p_first_char, SMD_VAR_LENGTH_BLOCK, SMD_VAR_LENGTH_BLOCK_LENGTH) == 0
+				) {
+				for (uint32_t length_digit_idx = char_idx + SMD_VAR_LENGTH_BLOCK_LENGTH; length_digit_idx < p_handle->description_src_size; length_digit_idx++) {
+					if (p_handle->description_src[length_digit_idx]             == ' ') {//length found
+						uint32_t var_length                                      = atoi(&p_handle->description_src[char_idx + SMD_VAR_LENGTH_BLOCK_LENGTH]);
+						uint32_t var_size                                        = 0;//multiply initial value by variable length
+						if (write_memory && (write_var_idx - 1) < p_handle->var_count) {
+							var_size                                             = p_handle->vars_ranges[write_var_idx - 1]  * var_length;
+							(p_handle)->vars_lengths        [write_var_idx - 1]  = var_length;
+							(p_handle)->vars_ranges         [write_var_idx - 1]  = var_size;
+							write_memory_offset                                 += var_size;
+						}
+						else if (!write_memory && var_idx != 0) {
+							var_size                                             = p_handle->vars_ranges[var_idx - 1] * var_length;
+							(p_handle)->linear_memory_size                      += var_size;
+						}
+						break;
+					}
+					else {
+						/*error*/
+					}
+					
+				}
+			}
+			
+
+			//
+			//VARIABLE NAME
+			//
+			if (!write_memory && var_idx != 0) {
+				if (
+					(p_handle->description_src_size - char_idx) > SMD_VAR_DECLARATION_BLOCK_LENGTH &&
+					memcmp(p_first_char, SMD_VAR_DECLARATION_BLOCK, SMD_VAR_DECLARATION_BLOCK_LENGTH) == 0
+					) {
+					for (uint32_t name_char_idx = char_idx + SMD_VAR_DECLARATION_BLOCK_LENGTH; name_char_idx < p_handle->description_src_size; name_char_idx++) {
+						if (p_handle->description_src[name_char_idx] == ' ') {//name found
+							memcpy(
+								p_handle->vars_names[var_idx - 1],//variable has already been calculated
+								p_first_char + SMD_VAR_DECLARATION_BLOCK_LENGTH,
+								name_char_idx - char_idx - SMD_VAR_DECLARATION_BLOCK_LENGTH
+							);
+							break;
+						}
+					}
+				}
+			}
+
+			//
+			//VALUE
+			//
+			if (write_memory && write_var_idx != 0) {
+				if (
+					(p_handle->description_src_size - char_idx) > SMD_VAR_VALUE_DEFINITION_BLOCK_LENGTH &&
+					memcmp(p_first_char, SMD_VAR_VALUE_DEFINITION_BLOCK, SMD_VAR_VALUE_DEFINITION_BLOCK_LENGTH) == 0
+					) {
+					uint32_t array_idx        = 0;//always zero if variable has length == 1
+					uint32_t literal_offset   = SMD_VAR_VALUE_DEFINITION_BLOCK_LENGTH;//questo
+					char     last_char        = '?';
+
+					for (uint32_t name_char_idx = char_idx + SMD_VAR_VALUE_DEFINITION_BLOCK_LENGTH; name_char_idx < p_handle->description_src_size; name_char_idx++) {
+						
+						if (p_handle->description_src[name_char_idx] == ' ' && last_char != ' ') {//name found
+							
+							char* p_last_char  = &p_handle->description_src[name_char_idx];
+							char* p_value_char = (p_first_char) + (literal_offset);
+							(literal_offset)   = (uint32_t)(p_last_char - (p_first_char));
+
+
+								 SMD_CHECK_INT_VAR_VALUE(p_value_char, p_last_char, write_var_idx, write_memory_offset, array_idx, p_handle, INT8,     int8_t)
+							else SMD_CHECK_INT_VAR_VALUE(p_value_char, p_last_char, write_var_idx, write_memory_offset, array_idx, p_handle, UINT8,    uint8_t)
+							else SMD_CHECK_INT_VAR_VALUE(p_value_char, p_last_char, write_var_idx, write_memory_offset, array_idx, p_handle, INT16,    int16_t)
+							else SMD_CHECK_INT_VAR_VALUE(p_value_char, p_last_char, write_var_idx, write_memory_offset, array_idx, p_handle, UINT16,   uint16_t)
+							else SMD_CHECK_INT_VAR_VALUE(p_value_char, p_last_char, write_var_idx, write_memory_offset, array_idx, p_handle, INT32,    int32_t)
+							else SMD_CHECK_INT_VAR_VALUE(p_value_char, p_last_char, write_var_idx, write_memory_offset, array_idx, p_handle, UINT32,   uint32_t)
+							else SMD_CHECK_INT_VAR_VALUE(p_value_char, p_last_char, write_var_idx, write_memory_offset, array_idx, p_handle, INT64,    int64_t)
+							else SMD_CHECK_INT_VAR_VALUE(p_value_char, p_last_char, write_var_idx, write_memory_offset, array_idx, p_handle, UINT64,   uint64_t)
+
+							else SMD_CHECK_FLT_VAR_VALUE(p_value_char, p_last_char, write_var_idx, write_memory_offset, array_idx, p_handle, FLOAT32,  float)
+							else SMD_CHECK_FLT_VAR_VALUE(p_value_char, p_last_char, write_var_idx, write_memory_offset, array_idx, p_handle, DOUBLE64, double)
+
+							else SMD_CHECK_STR_VAR_VALUE(p_first_char, char_idx, name_char_idx, write_var_idx, write_memory_offset, p_handle, STR128 )
+							else SMD_CHECK_STR_VAR_VALUE(p_first_char, char_idx, name_char_idx, write_var_idx, write_memory_offset, p_handle, STR256 )
+							else SMD_CHECK_STR_VAR_VALUE(p_first_char, char_idx, name_char_idx, write_var_idx, write_memory_offset, p_handle, STR512 )
+							else SMD_CHECK_STR_VAR_VALUE(p_first_char, char_idx, name_char_idx, write_var_idx, write_memory_offset, p_handle, STR1024)
+
+							if (array_idx >= p_handle->vars_lengths[write_var_idx - 1]) {
+								break;
+							}
+
+						}
+						else if (p_handle->description_src[name_char_idx] == '*') {
+							break;
+						}
+						last_char = p_handle->description_src[name_char_idx];
+					}
+				}
+			}
+		}
+
+		if (!write_memory) {
+			p_handle->p_linear_memory = calloc(p_handle->linear_memory_size, 1);
+			smdError(p_handle->p_linear_memory == NULL, "invalid handle linear memory", return 0);
+		}
+
+	}
+	
+
+	return 1;
+}
+
+uint8_t smdDebugPrint(
+	SmdFileHandle* p_handle,
+	uint8_t        print_all
+) {
+	smdError(p_handle == NULL, "invalid smd file handle memory", return 0);
+
+	char* description_src = "NULL";
+	if (p_handle->description_src != NULL) {
+		description_src = p_handle->description_src;
+	}
+
+	printf("\
+--------------------------------------------------\n\
+smd debug message:\n\
+handle:               %p\n\
+description_src_size: %i\n\
+description_src:    \n%s\n\
+var_count:   %i\n\
+memory_size: %i\n\
+"
+	, (void*)p_handle, p_handle->description_src_size, description_src, p_handle->var_count, p_handle->linear_memory_size);
+
+	if (print_all) {
+		for (uint32_t var_idx = 0; var_idx < p_handle->var_count; var_idx++) {
+			printf("-->\n\t\
+var_name:  %s\n\t\
+var_range: %i\n\
+<--\n"
+			, p_handle->vars_names[var_idx], p_handle->vars_ranges[var_idx]);
+		}
+	}
+	
+	printf("--------------------------------------------------\n");
+
+	return 1;
+}
+
+uint8_t smdAccessVarByRegion(
+	SmdFileHandle* p_handle,
+	uint32_t       offset,
+	uint32_t       size,
+	void*          p_dst
+) {
+	smdError(p_handle == NULL, "invalid smd file handle memory", return 0);
+	smdError(p_dst    == NULL, "invalid dst memory",             return 0);
+
+	smdError(
+		offset >= p_handle->linear_memory_size,
+		"invalid src offset",
+		return 0
+	);
+
+	smdError(
+		p_handle->p_linear_memory == NULL,
+		"invalid src linear memory",
+		return 0
+	);
+
+	memcpy(p_dst, &((char*)p_handle->p_linear_memory)[offset], size);
+
+	return 1;
+}
+
+uint8_t smdAccessVarByIndex(
+	SmdFileHandle* p_handle,
+	uint32_t       idx,
+	uint32_t*      p_size,
+	void*          p_dst
+) {
+	smdError(p_handle == NULL, "invalid smd file handle memory", return 0);
+	smdError(p_dst    == NULL, "invalid dst memory",             return 0);
+
+	smdError(
+		idx >= p_handle->var_count,
+		"invalid src var index",
+		return 0
+	);
+
+	smdError(
+		p_handle->p_linear_memory == NULL,
+		"invalid src linear memory",
+		return 0
+	);
+
+	uint32_t offset = 0;
+	for (uint32_t i = 0; i < idx; i++) {
+		offset += p_handle->vars_ranges[i];
+	}
+
+	if (p_size != NULL) {
+		(*p_size) = p_handle->vars_ranges[idx];
+	}
+	else {
+		memcpy(
+			p_dst,
+			&((char*)p_handle->p_linear_memory)[offset],
+			p_handle->vars_ranges[idx]
+		);
+	}
+
+	return 1;
+}
+
+uint8_t smdAccessVarByName(
+	SmdFileHandle* p_handle,
+	const char*    var_name,
+	uint32_t*      p_size,
+	void*          p_dst
+) {
+	smdError(p_handle == NULL, "invalid smd file handle memory", return 0);
+	smdError(var_name == NULL, "invalid var name memory",        return 0);
+	smdError(p_dst    == NULL, "invalid dst memory",             return 0);
+
+	smdError(
+		p_handle->p_linear_memory == NULL,
+		"invalid src linear memory",
+		return 0
+	);
+
+	uint32_t idx = 0;
+	for (uint32_t i = 0; i < p_handle->var_count; i++) {
+		if (memcmp(p_handle->vars_names[i], var_name, strlen(var_name)) == 0) {
+			idx = i;
+			break;
+		}
+	}
+
+	smdAccessVarByIndex(p_handle, idx, p_size, p_dst);
+
+	return 1;
+}
+
+uint8_t smdFileHandleRelease(
+	SmdFileHandle* p_handle
+) {
+	smdError(p_handle == NULL, "invalid smd file handle memory", return 0);
+
+	if (p_handle->description_src != NULL) {
+		free(p_handle->description_src);
+	}
+	if (p_handle->p_linear_memory == NULL) {
+		free(p_handle->p_linear_memory);
+	}
+
+	memset(p_handle, 0, sizeof(SmdFileHandle));
+
+	return 1;
+}
+
+
+#ifdef __cplusplus
+}
+#endif//__cplusplus

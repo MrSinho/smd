@@ -1,0 +1,10 @@
+UINT8     ^^ 2    !! run               --> 1 2                     *
+STR256    ^^ 1    !! name              --> noise                   *
+STR256    ^^ 1    !! start             --> noise_start             *
+STR256    ^^ 1    !! thread            --> noise_thread            *
+STR256    ^^ 1    !! update_pending    --> noise_update_pending    *
+STR256    ^^ 1    !! after_thread      --> noise_after_thread      *
+STR256    ^^ 1    !! update            --> noise_update            *
+STR256    ^^ 1    !! frame_update      --> noise_frame_update      *
+STR256    ^^ 1    !! frame_resize      --> noise_frame_resize      *
+STR256    ^^ 1    !! close             --> noise_close             *
