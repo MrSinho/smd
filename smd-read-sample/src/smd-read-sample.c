@@ -43,14 +43,14 @@ int main(void) {
 	uint8_t run[2] = { 0 };
 	smdError(
 		smdAccessVarByIndex(p_handle, 0, NULL, &run) == 0,
-		"application.smd: failed reading variable memory by index",
+		"application.smd: failed reading variable run",
 		return -1
 	);
 
-	char frame_update_function_name[32];//sizeof str256
+	char frame_update[32];//sizeof str256
 	smdError(
-		smdAccessVarByName(p_handle, "frame_update", NULL, frame_update_function_name) == 0,
-		"application.smd: failed accessing variable memory by name",
+		smdAccessVarByName(p_handle, "frame_update", NULL, frame_update) == 0,
+		"application.smd: failed reading variable frame_update",
 		return -1
 	);
 
@@ -84,35 +84,35 @@ int main(void) {
 	char identity_name[32] = { 0 };
 	smdError(
 		smdAccessVarByName(p_handle, "identity_name", NULL, identity_name) == 0,
-		"scene.smd: failed accessing identity_name",
+		"scene.smd: failed reading variable identity_name",
 		return -1
 	);
 
 	uint32_t mesh_vertex_count = 0;
 	smdError(
 		smdAccessVarByName(p_handle, "mesh_vertex_count", NULL, &mesh_vertex_count) == 0,
-		"scene.smd: failed accessing mesh_vertex_count",
+		"scene.smd: failed reading variable mesh_vertex_count",
 		return -1
 	);
 
 	float mesh_vertices[6] = { 0 };
 	smdError(
 		smdAccessVarByName(p_handle, "mesh_vertices", NULL, mesh_vertices) == 0,
-		"scene.smd: failed accessing mesh_vertices",
+		"scene.smd: failed reading variable mesh_vertices",
 		return -1
 	);
 
 	float transform_position[3] = { 0 };
 	smdError(
 		smdAccessVarByName(p_handle, "transform_position", NULL, transform_position) == 0,
-		"scene.smd: failed accessing transform_position",
+		"scene.smd: failed reading variable transform_position",
 		return -1
 	);
 
 	float camera_nc = 0.0f;
 	smdError(
 		smdAccessVarByName(p_handle, "camera_nc", NULL, &camera_nc) == 0,
-		"scene.smd: failed accessing camera_nc",
+		"scene.smd: failed reading variable camera_nc",
 		return -1
 	);
 
