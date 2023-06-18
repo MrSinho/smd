@@ -9,8 +9,7 @@ extern "C" {
 
 
 
-#define SMD_VAR_NAME_MAX_SIZE       64
-#define SMD_VAR_MAX_HIERARCY_LENGTH 64
+#define SMD_VAR_NAME_MAX_SIZE       128
 #define SMD_MAX_STACK_VAR_COUNT     2048
 
 #define smdError(condition, error_msg, failure_expression)\
@@ -113,23 +112,6 @@ extern uint8_t smdReadFile(
 );
 
 
-/*
-if (\
-		((p_handle)->description_src_size - char_idx) > SMD_VAR_## TYPE_UPPERCASE ##_TYPE_BLOCK_LENGTH &&\
-		memcmp(p_first_char, SMD_VAR_## TYPE_UPPERCASE ##_TYPE_BLOCK, SMD_VAR_## TYPE_UPPERCASE ##_TYPE_BLOCK_LENGTH) == 0\
-		) {\
-		if (write_memory) {\
-			(p_handle)->vars_ranges    [write_var_count]  = (uint32_t)_linear_memory_size;\
-			(p_handle)->vars_type_flags[write_var_count]  = SMD_VAR_TYPE_## TYPE_UPPERCASE;\
-			write_memory_offset                        += (uint32_t)_linear_memory_size;\
-			write_var_count++;\
-		}\
-		else {\
-			(p_handle)->linear_memory_size += (uint32_t)_linear_memory_size;\
-			(p_handle)->var_count++;\
-		}\
-	}
-*/
 
 #define SMD_CHECK_VAR_TYPE(\
 		p_first_char,\
