@@ -9,7 +9,7 @@ extern "C" {
 
 
 
-#define SMD_VAR_NAME_MAX_SIZE       128
+#define SMD_VAR_NAME_MAX_SIZE       128 
 #define SMD_MAX_STACK_VAR_COUNT     2048
 
 #define smdError(condition, error_msg, failure_expression)\
