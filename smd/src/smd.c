@@ -334,9 +334,11 @@ uint8_t smdAccessVarByName(
 		return 0
 	);
 
+
 	uint32_t idx = SMD_MAX_STACK_VAR_COUNT;
 	for (uint32_t i = 0; i < p_handle->var_count; i++) {
-		if (memcmp(p_handle->vars_names[i], var_name, strlen(var_name)) == 0) {
+		
+		if (strcmp(p_handle->vars_names[i], var_name) == 0) {
 			idx = i;
 			break;
 		}
