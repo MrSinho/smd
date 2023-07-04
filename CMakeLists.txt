@@ -38,13 +38,13 @@ endfunction()
 
 
 
-#||||               ||||
-#||||SMD READ SAMPLE||||
-#||||               ||||
-function(build_smd_read_sample)
-add_executable(smd-read-sample smd-read-sample/src/smd-read-sample.c)
-target_link_libraries(smd-read-sample PUBLIC smd)
-set_target_properties(smd-read-sample PROPERTIES
+#||||          ||||
+#||||SMD SAMPLE||||
+#||||          ||||
+function(build_smd_sample)
+add_executable(smd-sample smd-sample/src/smd-sample.c)
+target_link_libraries(smd-sample PUBLIC smd)
+set_target_properties(smd-sample PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
     VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
 )
@@ -73,7 +73,7 @@ option(SMD_BUILD_SAMPLE CACHE OFF)
 function(main)
 build_smd()
 if (SMD_BUILD_SAMPLE)
-build_smd_read_sample()
+build_smd_sample()
 endif(SMD_BUILD_SAMPLE)
 endfunction()
 

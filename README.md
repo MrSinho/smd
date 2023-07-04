@@ -1,6 +1,6 @@
 # Static Memory Description (smd)
 
-A simple `.smd` file format interpreter, which is a convenient alternative from other serialization formats such as yaml and json, and - in my opinion - it also feels much more familiar with the C programming language.
+A simple `.smd` file format interpreter and serializer, which is a convenient alternative from other serialization formats such as yaml and json, and - in my opinion - it also feels much more familiar with the C programming language.
 
 ## Clone and build
 
@@ -78,7 +78,7 @@ Before declaring a new variable, end the first description with the `*` characte
 
 ## Parsing
 
-See the [smd-read-example.c](smd-read-sample/src/smd-read-sample.c) file. To access a specific variable, use the following self-explanatory functions:
+See the [smd-example.c](smd-sample/src/smd-sample.c) file. To access a specific variable, use the following self-explanatory functions:
  *	```c
 	uint8_t smdAccessVarByRegion(
 		SmdFileHandle* p_handle,
@@ -103,9 +103,24 @@ See the [smd-read-example.c](smd-read-sample/src/smd-read-sample.c) file. To acc
 		void*          p_dst
 	);
 	```
+ *	```c
+	uint8_t smdWriteLine(
+		SmdExportHandle* p_handle,
+		uint32_t         range,
+		uint32_t         length,
+		char*            name,
+		SmdVarType       var_type,
+		void*            p_var_values
+	)
+	```
+ *	```c
+	uint8_t smdWriteFile(
+		SmdExportHandle* p_handle,
+		char*            dst_path
+	)
+	```
 
 ---
 
 ## To do
- * Export data to `.smd` file
  * Code documentation and cleanup

@@ -12,6 +12,9 @@ extern "C" {
 
 int main(void) {
 	
+	//
+	//READ EXAMPLE
+	//
 	SmdFileHandle* p_handle = smdAllocateFileHandle();
 	smdError(p_handle == NULL, "failed allocating smd handle memory", return 0);
 
@@ -22,7 +25,7 @@ int main(void) {
 	//
 	
 	smdError(
-		smdReadFile("../smd-read-sample/descriptions/application.smd", p_handle) == 0,
+		smdReadFile("../smd-sample/descriptions/application.smd", p_handle) == 0,
 		"application.smd: failed reading source file",
 		return -1
 	);
@@ -34,7 +37,7 @@ int main(void) {
 	);
 
 	smdError(
-		smdDebugPrint(p_handle, 1) == 0,
+		smdDebugPrintFileHandle(p_handle, 1) == 0,
 		"application.smd: failed printing handle properties",
 		return -1
 	);
@@ -64,7 +67,7 @@ int main(void) {
 	//SECOND FILE
 	//
 	smdError(
-		smdReadFile("../smd-read-sample/descriptions/scene.smd", p_handle) == 0,
+		smdReadFile("../smd-sample/descriptions/scene.smd", p_handle) == 0,
 		"scene.smd: failed reading source file",
 		return -1
 	);
@@ -76,7 +79,7 @@ int main(void) {
 	);
 
 	smdError(
-		smdDebugPrint(p_handle, 1) == 0,
+		smdDebugPrintFileHandle(p_handle, 1) == 0,
 		"scene.smd: failed printing handle properties",
 		return -1
 	);
@@ -119,6 +122,33 @@ int main(void) {
 	smdFileHandleRelease(p_handle);
 
 	smdFreeFileHandle(p_handle);
+
+
+	//
+	//WRITE EXAMPLE
+	//
+	SmdExportHandle* p_export = smdAllocateExportHandle();
+	smdError(p_export == NULL, "failed allocating smd export handle memory", return 0);
+
+	int8_t count[3] = { 1, 2, 3 };
+	smdWriteLine(
+		p_export, 1, 3, "count", SMD_VAR_TYPE_INT8, count
+	);
+
+	float floats[4] = { 2.0f, 4.0f, 6.0f, 8.0f };
+	smdWriteLine(
+		p_export, 1, 4, "floats", SMD_VAR_TYPE_FLOAT32, floats
+	);
+
+
+	char see[128] = "@github.com/mrsinho";
+	smdWriteLine(
+		p_export, 1, 1, "see", SMD_VAR_TYPE_STR1024, see//any str var type is fine
+	);
+
+	smdDebugPrintExportHandle(p_export);
+
+	smdWriteFile(p_export, "../smd-sample/descriptions/write.smd");
 
 	return 0;
 }

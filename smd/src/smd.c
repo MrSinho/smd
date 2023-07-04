@@ -5,7 +5,7 @@ extern "C" {
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <inttypes.h>
 
 #include "smd/smd.h"
 
@@ -16,11 +16,11 @@ extern "C" {
 
 
 uint8_t smdReadFile(
-	const char* src_path,
-	SmdFileHandle*  p_handle
+	const char*    src_path,
+	SmdFileHandle* p_handle
 ) {
-	smdError(src_path == NULL, "invalid src path memory",        return 0);
-	smdError(p_handle == NULL, "invalid smd file handle memory", return 0);
+	smdError(src_path == NULL, "smdReadFile: invalid src path memory",        return 0);
+	smdError(p_handle == NULL, "smdReadFile: invalid smd file handle memory", return 0);
 	
 	FILE*    stream = fopen(src_path, "r");
 
@@ -36,7 +36,7 @@ uint8_t smdReadFile(
 
 	smdError(
 		p_handle->description_src_size == 0,
-		"invalid handle src description size",
+		"smdReadFile: invalid handle src description size",
 		return 0
 	);
 
@@ -44,7 +44,7 @@ uint8_t smdReadFile(
 
 	smdError(
 		p_handle->description_src == NULL,
-		"invalid handle src description memory", 
+		"smdReadFile: invalid handle src description memory", 
 		return 0
 	);
 
@@ -58,17 +58,17 @@ uint8_t smdReadFile(
 uint8_t smdParseMemory(
 	SmdFileHandle* p_handle
 ) {
-	smdError(p_handle == NULL, "invalid smd file handle memory", return 0);
+	smdError(p_handle == NULL, "smdParseMemory: invalid smd file handle memory", return 0);
 	
 	smdError(
 		p_handle->description_src_size == 0,
-		"invalid src description size",
+		"smdParseMemory: invalid src description size",
 		return 0;
 	);
 
 	smdError(
 		p_handle->description_src == NULL,
-		"invalid src description memory",
+		"smdParseMemory: invalid src description memory",
 		return 0
 	);
 
@@ -108,7 +108,7 @@ uint8_t smdParseMemory(
 				memcmp(p_first_char, SMD_VAR_LENGTH_BLOCK, SMD_VAR_LENGTH_BLOCK_LENGTH) == 0
 				) {
 				for (uint32_t length_digit_idx = char_idx + SMD_VAR_LENGTH_BLOCK_LENGTH; length_digit_idx < p_handle->description_src_size; length_digit_idx++) {
-					if (p_handle->description_src[length_digit_idx]             == ' ') {//length found
+					if (p_handle->description_src[length_digit_idx] == ' ' || p_handle->description_src[length_digit_idx] == '\t') {//length found
 						uint32_t var_length                                      = atoi(&p_handle->description_src[char_idx + SMD_VAR_LENGTH_BLOCK_LENGTH]);
 						uint32_t var_size                                        = 0;//multiply initial value by variable length
 						if (write_memory && (write_var_idx - 1) < p_handle->var_count) {
@@ -140,7 +140,7 @@ uint8_t smdParseMemory(
 					memcmp(p_first_char, SMD_VAR_DECLARATION_BLOCK, SMD_VAR_DECLARATION_BLOCK_LENGTH) == 0
 					) {
 					for (uint32_t name_char_idx = char_idx + SMD_VAR_DECLARATION_BLOCK_LENGTH; name_char_idx < p_handle->description_src_size; name_char_idx++) {
-						if (p_handle->description_src[name_char_idx] == ' ') {//name found
+						if (p_handle->description_src[name_char_idx] == ' ' || p_handle->description_src[name_char_idx] == '\t') {//name found
 							memcpy(
 								p_handle->vars_names[var_idx - 1],//variable has already been calculated
 								p_first_char + SMD_VAR_DECLARATION_BLOCK_LENGTH,
@@ -166,7 +166,12 @@ uint8_t smdParseMemory(
 
 					for (uint32_t name_char_idx = char_idx + SMD_VAR_VALUE_DEFINITION_BLOCK_LENGTH; name_char_idx < p_handle->description_src_size; name_char_idx++) {
 						
-						if (p_handle->description_src[name_char_idx] == ' ' && last_char != ' ') {//name found
+						if (
+							(p_handle->description_src[name_char_idx] == ' '  && last_char != ' ' ) ||
+							(p_handle->description_src[name_char_idx] == ' '  && last_char != '\t') ||
+							(p_handle->description_src[name_char_idx] == '\t' && last_char != ' ' ) ||
+							(p_handle->description_src[name_char_idx] == '\t' && last_char != '\t')
+							) {//name found
 							
 							char* p_last_char  = &p_handle->description_src[name_char_idx];
 							char* p_value_char = (p_first_char) + (literal_offset);
@@ -206,7 +211,7 @@ uint8_t smdParseMemory(
 
 		if (!write_memory) {
 			p_handle->p_linear_memory = calloc(p_handle->linear_memory_size, 1);
-			smdError(p_handle->p_linear_memory == NULL, "invalid handle linear memory", return 0);
+			smdError(p_handle->p_linear_memory == NULL, "smdParseMemory: invalid handle linear memory", return 0);
 		}
 
 	}
@@ -215,11 +220,11 @@ uint8_t smdParseMemory(
 	return 1;
 }
 
-uint8_t smdDebugPrint(
+uint8_t smdDebugPrintFileHandle(
 	SmdFileHandle* p_handle,
 	uint8_t        print_all
 ) {
-	smdError(p_handle == NULL, "invalid smd file handle memory", return 0);
+	smdError(p_handle == NULL, "smdDebugPrintFileHandle: invalid smd file handle memory", return 0);
 
 	char* description_src = "NULL";
 	if (p_handle->description_src != NULL) {
@@ -258,18 +263,18 @@ uint8_t smdAccessVarByRegion(
 	uint32_t       size,
 	void*          p_dst
 ) {
-	smdError(p_handle == NULL, "invalid smd file handle memory", return 0);
-	smdError(p_dst    == NULL, "invalid dst memory",             return 0);
+	smdError(p_handle == NULL, "smdAccessVarByRegion: invalid smd file handle memory", return 0);
+	smdError(p_dst    == NULL, "smdAccessVarByRegion: invalid dst memory",             return 0);
 
 	smdError(
 		offset >= p_handle->linear_memory_size,
-		"invalid src offset",
+		"smdAccessVarByRegion: invalid src offset",
 		return 0
 	);
 
 	smdError(
 		p_handle->p_linear_memory == NULL,
-		"invalid src linear memory",
+		"smdAccessVarByRegion: invalid src linear memory",
 		return 0
 	);
 
@@ -284,18 +289,18 @@ uint8_t smdAccessVarByIndex(
 	uint32_t*      p_size,
 	void*          p_dst
 ) {
-	smdError(p_handle == NULL, "invalid smd file handle memory", return 0);
-	smdError(p_dst    == NULL, "invalid dst memory",             return 0);
+	smdError(p_handle == NULL, "smdAccessVarByIndex: invalid smd file handle memory", return 0);
+	smdError(p_dst    == NULL, "smdAccessVarByIndex: invalid dst memory",             return 0);
 
 	smdError(
 		idx >= p_handle->var_count,
-		"invalid src var index",
+		"smdAccessVarByIndex: invalid src var index",
 		return 0
 	);
 
 	smdError(
 		p_handle->p_linear_memory == NULL,
-		"invalid src linear memory",
+		"smdAccessVarByIndex: invalid src linear memory",
 		return 0
 	);
 
@@ -324,13 +329,13 @@ uint8_t smdAccessVarByName(
 	uint32_t*      p_size,
 	void*          p_dst
 ) {
-	smdError(p_handle == NULL, "invalid smd file handle memory", return 0);
-	smdError(var_name == NULL, "invalid var name memory",        return 0);
-	smdError(p_dst    == NULL, "invalid dst memory",             return 0);
+	smdError(p_handle == NULL, "smdAccessVarByName: invalid smd file handle memory", return 0);
+	smdError(var_name == NULL, "smdAccessVarByName: invalid var name memory",        return 0);
+	smdError(p_dst    == NULL, "smdAccessVarByName: invalid dst memory",             return 0);
 
 	smdError(
 		p_handle->p_linear_memory == NULL,
-		"invalid src linear memory",
+		"smdAccessVarByName: invalid src linear memory",
 		return 0
 	);
 
@@ -356,7 +361,7 @@ uint8_t smdAccessVarByName(
 uint8_t smdFileHandleRelease(
 	SmdFileHandle* p_handle
 ) {
-	smdError(p_handle == NULL, "invalid smd file handle memory", return 0);
+	smdError(p_handle == NULL, "smdFileHandleRelease: invalid smd file handle memory", return 0);
 
 	if (p_handle->description_src != NULL) {
 		free(p_handle->description_src);
@@ -370,6 +375,115 @@ uint8_t smdFileHandleRelease(
 	return 1;
 }
 
+uint8_t smdWriteLine(
+	SmdExportHandle* p_handle,
+	uint32_t         range,
+	uint32_t         length,
+	char*            name,
+	SmdVarType       var_type,
+	void*            p_var_values
+) {
+	smdError(p_handle     == NULL, "smdWriteLine: invalid handle memory",     return 0);
+	smdError(range        == 0,    "smdWriteLine: invalid var range",         return 0);
+	smdError(length       == 0,    "smdWriteLine: invalid var length",        return 0);
+	smdError(name         == NULL, "smdWriteLine: invalid var name memory",   return 0);
+	smdError(p_var_values == NULL, "smdWriteLine: invalid var values memory", return 0);
+	
+	smdError(
+		var_type >= SMD_VAR_TYPE_MAX_ENUM || var_type == SMD_VAR_TYPE_NOT_SPECIFIED,
+		"smdWriteLine: invalid var type",
+		return 0
+	);
+
+	smdError(
+		strlen(name) == 0,
+		"smdWriteLine: invalid var name",
+		return 0
+	)
+
+	char s_type[32] = { 0 };
+	
+	     if (var_type == SMD_VAR_TYPE_INT8    )  { strcpy(s_type, SMD_VAR_INT8_TYPE_BLOCK);     SMD_WRITE_INT_VAR_VALUES(p_handle, s_type, length, name, int8_t,  i8);  }
+	else if (var_type == SMD_VAR_TYPE_INT16   )  { strcpy(s_type, SMD_VAR_INT16_TYPE_BLOCK);    SMD_WRITE_INT_VAR_VALUES(p_handle, s_type, length, name, int16_t, i16); }
+	else if (var_type == SMD_VAR_TYPE_INT32   )  { strcpy(s_type, SMD_VAR_INT32_TYPE_BLOCK);    SMD_WRITE_INT_VAR_VALUES(p_handle, s_type, length, name, int32_t, i32); }
+	else if (var_type == SMD_VAR_TYPE_INT64   )  { strcpy(s_type, SMD_VAR_INT64_TYPE_BLOCK);    SMD_WRITE_INT_VAR_VALUES(p_handle, s_type, length, name, int64_t, i64); }
+
+	else if (var_type == SMD_VAR_TYPE_UINT8   )  { strcpy(s_type, SMD_VAR_UINT8_TYPE_BLOCK);    SMD_WRITE_INT_VAR_VALUES(p_handle, s_type, length, name, uint8_t,  u8);  }
+	else if (var_type == SMD_VAR_TYPE_UINT16  )  { strcpy(s_type, SMD_VAR_UINT16_TYPE_BLOCK);   SMD_WRITE_INT_VAR_VALUES(p_handle, s_type, length, name, uint16_t, u16); }
+	else if (var_type == SMD_VAR_TYPE_UINT32  )  { strcpy(s_type, SMD_VAR_UINT32_TYPE_BLOCK);   SMD_WRITE_INT_VAR_VALUES(p_handle, s_type, length, name, uint32_t, u32); }
+	else if (var_type == SMD_VAR_TYPE_UINT64  )  { strcpy(s_type, SMD_VAR_UINT64_TYPE_BLOCK);   SMD_WRITE_INT_VAR_VALUES(p_handle, s_type, length, name, uint64_t, u64); }
+
+	else if (var_type == SMD_VAR_TYPE_FLOAT32 )  { strcpy(s_type, SMD_VAR_FLOAT32_TYPE_BLOCK);  SMD_WRITE_FLT_VAR_VALUES(p_handle, s_type, length, name, float);  }
+	else if (var_type == SMD_VAR_TYPE_DOUBLE64)  { strcpy(s_type, SMD_VAR_DOUBLE64_TYPE_BLOCK); SMD_WRITE_FLT_VAR_VALUES(p_handle, s_type, length, name, double); }
+
+	else if (var_type == SMD_VAR_TYPE_STR128  )  { strcpy(s_type, SMD_VAR_STR128_TYPE_BLOCK);   SMD_WRITE_STR_VAR_VALUES(p_handle, s_type, length, name, p_var_values); }
+	else if (var_type == SMD_VAR_TYPE_STR256  )  { strcpy(s_type, SMD_VAR_STR256_TYPE_BLOCK);   SMD_WRITE_STR_VAR_VALUES(p_handle, s_type, length, name, p_var_values); }
+	else if (var_type == SMD_VAR_TYPE_STR512  )  { strcpy(s_type, SMD_VAR_STR512_TYPE_BLOCK);   SMD_WRITE_STR_VAR_VALUES(p_handle, s_type, length, name, p_var_values); }
+	else if (var_type == SMD_VAR_TYPE_STR1024 )  { strcpy(s_type, SMD_VAR_STR1024_TYPE_BLOCK);  SMD_WRITE_STR_VAR_VALUES(p_handle, s_type, length, name, p_var_values); }
+
+	p_handle->var_count++;
+
+	return 1;
+}
+
+uint8_t smdDebugPrintExportHandle(
+	SmdExportHandle* p_handle
+) {
+	smdError(p_handle == NULL, "smdDebugPrintExportHandle: invalid handle memory", return 0);
+
+	for (uint32_t var_idx = 0; var_idx < p_handle->var_count; var_idx++) {
+		printf(p_handle->smd_lines[var_idx]);
+	}
+
+	return 1;
+}
+
+uint8_t smdWriteFile(
+	SmdExportHandle* p_handle,
+	char*            dst_path
+) {
+	smdError(p_handle == NULL, "smdWriteFile: invalid handle memory",   return 0);
+	smdError(dst_path == NULL, "smdWriteFile: invalid dst path memory", return 0);
+
+	uint32_t src_size = 0;
+	for (uint32_t var_idx = 0; var_idx < p_handle->var_count; var_idx++) {
+		src_size += (uint32_t)strlen(p_handle->smd_lines[var_idx]);
+	}
+
+	char* src = calloc(1, src_size);
+	smdError(
+		src == NULL,
+		"smdWriteFile: invalid src buffer memory",
+		return 0
+	);
+
+	uint32_t write_offset = 0;
+	for (uint32_t var_idx = 0; var_idx < p_handle->var_count; var_idx++) {
+		memcpy(&src[write_offset], p_handle->smd_lines[var_idx], strlen(p_handle->smd_lines[var_idx]));
+		write_offset += (uint32_t)strlen(p_handle->smd_lines[var_idx]);
+	}
+
+	FILE* stream = fopen(dst_path, "w");
+
+	fwrite(src, 1, src_size, stream);
+
+	fclose(stream);
+
+	free(src);
+
+	return 1;
+}
+
+
+uint8_t SmdExportHandleRelease(
+	SmdExportHandle* p_handle
+) {
+	smdError(p_handle == NULL, "invalid smd export handle memory", return 0);
+
+	memset(p_handle, 0, sizeof(SmdExportHandle));
+
+	return 1;
+}
 
 #ifdef __cplusplus
 }
