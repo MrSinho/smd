@@ -377,14 +377,12 @@ uint8_t smdFileHandleRelease(
 
 uint8_t smdWriteLine(
 	SmdExportHandle* p_handle,
-	uint32_t         range,
 	uint32_t         length,
 	char*            name,
 	SmdVarType       var_type,
 	void*            p_var_values
 ) {
 	smdError(p_handle     == NULL, "smdWriteLine: invalid handle memory",     return 0);
-	smdError(range        == 0,    "smdWriteLine: invalid var range",         return 0);
 	smdError(length       == 0,    "smdWriteLine: invalid var length",        return 0);
 	smdError(name         == NULL, "smdWriteLine: invalid var name memory",   return 0);
 	smdError(p_var_values == NULL, "smdWriteLine: invalid var values memory", return 0);

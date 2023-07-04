@@ -132,18 +132,18 @@ int main(void) {
 
 	int8_t count[3] = { 1, 2, 3 };
 	smdWriteLine(
-		p_export, 1, 3, "count", SMD_VAR_TYPE_INT8, count
+		p_export, 3, "count", SMD_VAR_TYPE_INT8, count
 	);
 
 	float floats[4] = { 2.0f, 4.0f, 6.0f, 8.0f };
 	smdWriteLine(
-		p_export, 1, 4, "floats", SMD_VAR_TYPE_FLOAT32, floats
+		p_export, 4, "floats", SMD_VAR_TYPE_FLOAT32, floats
 	);
 
 
 	char see[128] = "@github.com/mrsinho";
 	smdWriteLine(
-		p_export, 1, 1, "see", SMD_VAR_TYPE_STR1024, see//any str var type is fine
+		p_export, 1, "see", SMD_VAR_TYPE_STR1024, see//any str var type is fine
 	);
 
 	smdDebugPrintExportHandle(p_export);

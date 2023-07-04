@@ -106,7 +106,6 @@ See the [smd-example.c](smd-sample/src/smd-sample.c) file. To access a specific 
  *	```c
 	uint8_t smdWriteLine(
 		SmdExportHandle* p_handle,
-		uint32_t         range,
 		uint32_t         length,
 		char*            name,
 		SmdVarType       var_type,

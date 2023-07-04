@@ -306,7 +306,6 @@ typedef struct SmdExportHandle {
 
 extern uint8_t smdWriteLine(
 	SmdExportHandle* p_handle,
-	uint32_t         range,
 	uint32_t         length,
 	char*            name,
 	SmdVarType       var_type,
