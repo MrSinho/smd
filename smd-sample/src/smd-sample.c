@@ -150,6 +150,10 @@ int main(void) {
 
 	smdWriteFile(p_export, "../smd-sample/descriptions/write.smd");
 
+	smdExportHandleRelease(p_export);
+
+	smdFreeExportHandle(p_export);
+
 	return 0;
 }
 
