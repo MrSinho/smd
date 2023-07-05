@@ -464,7 +464,7 @@ uint8_t smdWriteFile(
 	FILE* stream = fopen(dst_path, "w");
 
 	fwrite(src, 1, src_size, stream);
-
+	fflush(stream);
 	fclose(stream);
 
 	free(src);
