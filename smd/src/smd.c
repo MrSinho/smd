@@ -472,8 +472,7 @@ uint8_t smdWriteFile(
 	return 1;
 }
 
-
-uint8_t SmdExportHandleRelease(
+uint8_t smdExportHandleRelease(
 	SmdExportHandle* p_handle
 ) {
 	smdError(p_handle == NULL, "invalid smd export handle memory", return 0);
