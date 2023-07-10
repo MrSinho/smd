@@ -132,19 +132,19 @@ int main(void) {
 
 	smdCommentLine(p_export, "COUNTING FROM 1 TO 3...\n");
 	int8_t count[3] = { 1, 2, 3 };
-	smdWriteVar(
+	smdWriteLine(
 		p_export, 3, "count", SMD_VAR_TYPE_INT8, count
 	);
 
 	smdCommentLine(p_export, "\n");
 	float floats[4] = { 2.0f, 4.0f, 6.0f, 8.0f };
-	smdWriteVar(
+	smdWriteLine(
 		p_export, 4, "floats", SMD_VAR_TYPE_FLOAT32, floats
 	);
 
 	smdCommentLine(p_export, "\n\tSOME GITHUB INFO HERE:\n");
 	char see[128] = "@github.com/mrsinho";
-	smdWriteVar(
+	smdWriteLine(
 		p_export, 1, "see", SMD_VAR_TYPE_STR1024, see//any str var type is fine
 	);
 

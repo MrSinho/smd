@@ -375,7 +375,7 @@ uint8_t smdFileHandleRelease(
 	return 1;
 }
 
-uint8_t smdWriteVar(
+uint8_t smdWriteLine(
 	SmdExportHandle* p_handle,
 	uint32_t         length,
 	char*            name,

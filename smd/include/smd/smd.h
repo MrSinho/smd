@@ -309,7 +309,7 @@ typedef struct SmdExportHandle {
 	);\
 	strcat((p_handle)->smd_lines[(p_handle)->line_count], "    *\n");
 
-extern uint8_t smdWriteVar(
+extern uint8_t smdWriteLine(
 	SmdExportHandle* p_handle,
 	uint32_t         length,
 	char*            name,
