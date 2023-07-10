@@ -244,16 +244,21 @@ extern uint8_t smdFileHandleRelease(
 
 
 #define SMD_EXPORT_MAX_LINE_LENGTH 2048
+#define SMD_EXPORT_MAX_LINE_COUNT  (SMD_MAX_STACK_VAR_COUNT * 2)
 
 typedef char SmdLine[SMD_EXPORT_MAX_LINE_LENGTH];
 
 typedef struct SmdExportHandle {
-	uint32_t   var_count;
+	
+	uint32_t   line_count;
+	SmdLine    smd_lines   [SMD_EXPORT_MAX_LINE_COUNT];
+
 	uint32_t   vars_ranges [SMD_MAX_STACK_VAR_COUNT];
 	uint32_t   vars_lengths[SMD_MAX_STACK_VAR_COUNT];
 	SmdVarName vars_names  [SMD_MAX_STACK_VAR_COUNT];
 	SmdVarType vars_types  [SMD_MAX_STACK_VAR_COUNT];
-	SmdLine    smd_lines   [SMD_MAX_STACK_VAR_COUNT];
+	uint32_t   vars_indices[SMD_MAX_STACK_VAR_COUNT];
+
 } SmdExportHandle;
 
 #define smdAllocateExportHandle() ((SmdExportHandle*)calloc(1, sizeof(SmdExportHandle)))
@@ -262,7 +267,7 @@ typedef struct SmdExportHandle {
 
 
 #define SMD_WRITE_LINE_START(p_handle, s_type, length, name)\
-	snprintf((p_handle)->smd_lines[(p_handle)->var_count], SMD_EXPORT_MAX_LINE_LENGTH,\
+	snprintf((p_handle)->smd_lines[(p_handle)->line_count], SMD_EXPORT_MAX_LINE_LENGTH,\
 		"%s    %s%i    %s%s    %s",\
 		s_type,\
 		SMD_VAR_LENGTH_BLOCK, length,\
@@ -275,41 +280,46 @@ typedef struct SmdExportHandle {
 	SMD_WRITE_LINE_START(p_handle, s_type, length, name);\
 	for (uint32_t var_value_idx = 0; var_value_idx < length; var_value_idx++) {\
 		type var_value = ((type*)p_var_values)[var_value_idx];\
-		snprintf((p_handle)->smd_lines[(p_handle)->var_count], SMD_EXPORT_MAX_LINE_LENGTH,\
+		snprintf((p_handle)->smd_lines[(p_handle)->line_count], SMD_EXPORT_MAX_LINE_LENGTH,\
 			"%s%" PRI ## t_size " ",\
-			(p_handle)->smd_lines[(p_handle)->var_count],\
+			(p_handle)->smd_lines[(p_handle)->line_count],\
 			var_value\
 		);\
 	}\
-	strcat((p_handle)->smd_lines[(p_handle)->var_count], "    *\n");
+	strcat((p_handle)->smd_lines[(p_handle)->line_count], "    *\n");
 
 #define SMD_WRITE_FLT_VAR_VALUES(p_handle, s_type, length, name, type)\
 	SMD_WRITE_LINE_START(p_handle, s_type, length, name);\
 	for (uint32_t var_value_idx = 0; var_value_idx < length; var_value_idx++) {\
 		type var_value = ((type*)p_var_values)[var_value_idx];\
-		snprintf((p_handle)->smd_lines[(p_handle)->var_count], SMD_EXPORT_MAX_LINE_LENGTH,\
+		snprintf((p_handle)->smd_lines[(p_handle)->line_count], SMD_EXPORT_MAX_LINE_LENGTH,\
 			"%s%f ",\
-			(p_handle)->smd_lines[(p_handle)->var_count],\
+			(p_handle)->smd_lines[(p_handle)->line_count],\
 			var_value\
 		);\
 	}\
-	strcat((p_handle)->smd_lines[(p_handle)->var_count], "    *\n");
+	strcat((p_handle)->smd_lines[(p_handle)->line_count], "    *\n");
 
 #define SMD_WRITE_STR_VAR_VALUES(p_handle, s_type, length, name, p_string)\
 	SMD_WRITE_LINE_START(p_handle, s_type, length, name);\
-	snprintf((p_handle)->smd_lines[(p_handle)->var_count], SMD_EXPORT_MAX_LINE_LENGTH,\
+	snprintf((p_handle)->smd_lines[(p_handle)->line_count], SMD_EXPORT_MAX_LINE_LENGTH,\
 		"%s%s ",\
-		(p_handle)->smd_lines[(p_handle)->var_count],\
+		(p_handle)->smd_lines[(p_handle)->line_count],\
 		(char*)(p_string)\
 	);\
-	strcat((p_handle)->smd_lines[(p_handle)->var_count], "    *\n");
+	strcat((p_handle)->smd_lines[(p_handle)->line_count], "    *\n");
 
-extern uint8_t smdWriteLine(
+extern uint8_t smdWriteVar(
 	SmdExportHandle* p_handle,
 	uint32_t         length,
 	char*            name,
 	SmdVarType       var_type,
 	void*            p_var_values
+);
+
+extern uint8_t smdCommentLine(
+	SmdExportHandle* p_handle,
+	SmdLine          line
 );
 
 extern uint8_t smdDebugPrintExportHandle(

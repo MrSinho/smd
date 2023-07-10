@@ -375,7 +375,7 @@ uint8_t smdFileHandleRelease(
 	return 1;
 }
 
-uint8_t smdWriteLine(
+uint8_t smdWriteVar(
 	SmdExportHandle* p_handle,
 	uint32_t         length,
 	char*            name,
@@ -419,7 +419,20 @@ uint8_t smdWriteLine(
 	else if (var_type == SMD_VAR_TYPE_STR512  )  { strcpy(s_type, SMD_VAR_STR512_TYPE_BLOCK);   SMD_WRITE_STR_VAR_VALUES(p_handle, s_type, length, name, p_var_values); }
 	else if (var_type == SMD_VAR_TYPE_STR1024 )  { strcpy(s_type, SMD_VAR_STR1024_TYPE_BLOCK);  SMD_WRITE_STR_VAR_VALUES(p_handle, s_type, length, name, p_var_values); }
 
-	p_handle->var_count++;
+	p_handle->line_count++;
+
+	return 1;
+}
+
+uint8_t smdCommentLine(
+	SmdExportHandle* p_handle,
+	SmdLine          line
+) {
+	smdError(p_handle == NULL, "smdCommentLine: invalid handle memory", return 0);
+
+	memcpy(p_handle->smd_lines[p_handle->line_count], line, sizeof(SmdLine));
+
+	p_handle->line_count++;
 
 	return 1;
 }
@@ -429,8 +442,8 @@ uint8_t smdDebugPrintExportHandle(
 ) {
 	smdError(p_handle == NULL, "smdDebugPrintExportHandle: invalid handle memory", return 0);
 
-	for (uint32_t var_idx = 0; var_idx < p_handle->var_count; var_idx++) {
-		printf(p_handle->smd_lines[var_idx]);
+	for (uint32_t line_idx = 0; line_idx < p_handle->line_count; line_idx++) {
+		printf(p_handle->smd_lines[line_idx]);
 	}
 
 	return 1;
@@ -444,8 +457,8 @@ uint8_t smdWriteFile(
 	smdError(dst_path == NULL, "smdWriteFile: invalid dst path memory", return 0);
 
 	uint32_t src_size = 0;
-	for (uint32_t var_idx = 0; var_idx < p_handle->var_count; var_idx++) {
-		src_size += (uint32_t)strlen(p_handle->smd_lines[var_idx]);
+	for (uint32_t line_idx = 0; line_idx < p_handle->line_count; line_idx++) {
+		src_size += (uint32_t)strlen(p_handle->smd_lines[line_idx]);
 	}
 
 	char* src = calloc(1, src_size);
@@ -456,9 +469,9 @@ uint8_t smdWriteFile(
 	);
 
 	uint32_t write_offset = 0;
-	for (uint32_t var_idx = 0; var_idx < p_handle->var_count; var_idx++) {
-		memcpy(&src[write_offset], p_handle->smd_lines[var_idx], strlen(p_handle->smd_lines[var_idx]));
-		write_offset += (uint32_t)strlen(p_handle->smd_lines[var_idx]);
+	for (uint32_t line_idx = 0; line_idx < p_handle->line_count; line_idx++) {
+		memcpy(&src[write_offset], p_handle->smd_lines[line_idx], strlen(p_handle->smd_lines[line_idx]));
+		write_offset += (uint32_t)strlen(p_handle->smd_lines[line_idx]);
 	}
 
 	FILE* stream = fopen(dst_path, "w");

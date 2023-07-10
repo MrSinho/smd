@@ -130,19 +130,21 @@ int main(void) {
 	SmdExportHandle* p_export = smdAllocateExportHandle();
 	smdError(p_export == NULL, "failed allocating smd export handle memory", return 0);
 
+	smdCommentLine(p_export, "COUNTING FROM 1 TO 3...\n");
 	int8_t count[3] = { 1, 2, 3 };
-	smdWriteLine(
+	smdWriteVar(
 		p_export, 3, "count", SMD_VAR_TYPE_INT8, count
 	);
 
+	smdCommentLine(p_export, "\n");
 	float floats[4] = { 2.0f, 4.0f, 6.0f, 8.0f };
-	smdWriteLine(
+	smdWriteVar(
 		p_export, 4, "floats", SMD_VAR_TYPE_FLOAT32, floats
 	);
 
-
+	smdCommentLine(p_export, "\n\tSOME GITHUB INFO HERE:\n");
 	char see[128] = "@github.com/mrsinho";
-	smdWriteLine(
+	smdWriteVar(
 		p_export, 1, "see", SMD_VAR_TYPE_STR1024, see//any str var type is fine
 	);
 
