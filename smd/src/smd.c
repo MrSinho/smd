@@ -397,7 +397,13 @@ uint8_t smdWriteLine(
 		strlen(name) == 0,
 		"smdWriteLine: invalid var name",
 		return 0
-	)
+	);
+
+	smdError(
+		p_handle->line_count >= SMD_EXPORT_MAX_LINE_COUNT,
+		"smdWriteLine: reached max line count",
+		return 0
+	);
 
 	char s_type[32] = { 0 };
 	
@@ -429,6 +435,12 @@ uint8_t smdCommentLine(
 	SmdLine          line
 ) {
 	smdError(p_handle == NULL, "smdCommentLine: invalid handle memory", return 0);
+
+	smdError(
+		p_handle->line_count >= SMD_EXPORT_MAX_LINE_COUNT,
+		"smdCommentLine: reached max line count",
+		return 0
+	);
 
 	memcpy(p_handle->smd_lines[p_handle->line_count], line, sizeof(SmdLine));
 
