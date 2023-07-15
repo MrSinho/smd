@@ -173,11 +173,11 @@ uint8_t smdParseMemory(
 							(p_handle->description_src[name_char_idx] == '\t' && last_char != '\t')
 							) {//name found
 							
-							char* p_last_char  = &p_handle->description_src[name_char_idx];
-							char* p_value_char = (p_first_char) + (literal_offset);
-							(literal_offset)   = (uint32_t)(p_last_char - (p_first_char));
-
-
+								char* p_last_char  = &p_handle->description_src[name_char_idx];
+								char* p_value_char = (p_first_char)+(literal_offset);
+								
+								(literal_offset) = (uint32_t)(p_last_char - (p_first_char));
+								
 								 SMD_CHECK_INT_VAR_VALUE(p_value_char, p_last_char, write_var_idx, write_memory_offset, array_idx, p_handle, INT8,     int8_t)
 							else SMD_CHECK_INT_VAR_VALUE(p_value_char, p_last_char, write_var_idx, write_memory_offset, array_idx, p_handle, UINT8,    uint8_t)
 							else SMD_CHECK_INT_VAR_VALUE(p_value_char, p_last_char, write_var_idx, write_memory_offset, array_idx, p_handle, INT16,    int16_t)
@@ -200,7 +200,10 @@ uint8_t smdParseMemory(
 							}
 
 						}
-						else if (p_handle->description_src[name_char_idx] == '*') {
+						else if (
+							(p_handle->description_src_size - name_char_idx) > SMD_VAR_END_BLOCK_LENGTH &&
+							memcmp(p_first_char, SMD_VAR_END_BLOCK, SMD_VAR_END_BLOCK_LENGTH) == 0
+							) {
 							break;
 						}
 						last_char = p_handle->description_src[name_char_idx];

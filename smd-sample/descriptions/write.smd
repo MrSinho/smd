@@ -1,7 +1,7 @@
 COUNTING FROM 1 TO 3...
-_INT8    ^^ 3    !! count    --> 1 2 3     *
+_INT8    ^^ 3    !! count    --> 1 2 3 				***
 
-FLOAT32    ^^ 4    !! floats    --> 2.000000 4.000000 6.000000 8.000000     *
+FLOAT32    ^^ 4    !! floats    --> 2.000000 4.000000 6.000000 8.000000 				***
 
 	SOME GITHUB INFO HERE:
-STR1024    ^^ 1    !! see    --> @github.com/mrsinho     *
+STR1024    ^^ 1    !! see    --> @github.com/mrsinho 				***

@@ -77,10 +77,12 @@ typedef enum SmdVarType {
 #define SMD_VAR_LENGTH_BLOCK             "^^ "
 #define SMD_VAR_DECLARATION_BLOCK        "!! "
 #define SMD_VAR_VALUE_DEFINITION_BLOCK   "--> "
+#define SMD_VAR_END_BLOCK                "***"
 
 #define SMD_VAR_LENGTH_BLOCK_LENGTH           (uint32_t)strlen(SMD_VAR_LENGTH_BLOCK)
 #define SMD_VAR_DECLARATION_BLOCK_LENGTH      (uint32_t)strlen(SMD_VAR_DECLARATION_BLOCK)
 #define SMD_VAR_VALUE_DEFINITION_BLOCK_LENGTH (uint32_t)strlen(SMD_VAR_VALUE_DEFINITION_BLOCK)
+#define SMD_VAR_END_BLOCK_LENGTH              (uint32_t)strlen(SMD_VAR_END_BLOCK)
 
 
 
@@ -205,6 +207,7 @@ extern uint8_t smdReadFile(
 			string_length\
 		);\
 		((char*)(p_handle)->p_linear_memory)[(write_memory_offset) - (p_handle)->vars_ranges[(write_var_count) - 1] + string_length] = '\0';\
+		break;\
 	}//var size has already been calculated
 
 extern uint8_t smdParseMemory(
@@ -275,6 +278,11 @@ typedef struct SmdExportHandle {
 		SMD_VAR_VALUE_DEFINITION_BLOCK\
 	);\
 
+#define SMD_WRITE_LINE_END(p_handle)\
+	strcat((p_handle)->smd_lines[(p_handle)->line_count], "    ");\
+	strcat((p_handle)->smd_lines[(p_handle)->line_count], SMD_VAR_END_BLOCK);\
+	strcat((p_handle)->smd_lines[(p_handle)->line_count], "\n");
+
 // i or u
 #define SMD_WRITE_INT_VAR_VALUES(p_handle, s_type, length, name, type, t_size)\
 	SMD_WRITE_LINE_START(p_handle, s_type, length, name);\
@@ -286,7 +294,7 @@ typedef struct SmdExportHandle {
 			var_value\
 		);\
 	}\
-	strcat((p_handle)->smd_lines[(p_handle)->line_count], "    *\n");
+	SMD_WRITE_LINE_END(p_handle)
 
 #define SMD_WRITE_FLT_VAR_VALUES(p_handle, s_type, length, name, type)\
 	SMD_WRITE_LINE_START(p_handle, s_type, length, name);\
@@ -298,7 +306,7 @@ typedef struct SmdExportHandle {
 			var_value\
 		);\
 	}\
-	strcat((p_handle)->smd_lines[(p_handle)->line_count], "    *\n");
+	SMD_WRITE_LINE_END(p_handle)
 
 #define SMD_WRITE_STR_VAR_VALUES(p_handle, s_type, length, name, p_string)\
 	SMD_WRITE_LINE_START(p_handle, s_type, length, name);\
@@ -307,7 +315,7 @@ typedef struct SmdExportHandle {
 		(p_handle)->smd_lines[(p_handle)->line_count],\
 		(char*)(p_string)\
 	);\
-	strcat((p_handle)->smd_lines[(p_handle)->line_count], "    *\n");
+	SMD_WRITE_LINE_END(p_handle)
 
 extern uint8_t smdWriteLine(
 	SmdExportHandle* p_handle,
