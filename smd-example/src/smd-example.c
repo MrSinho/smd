@@ -25,7 +25,7 @@ int main(void) {
 	//
 	
 	smdError(
-		smdReadFile("../smd-sample/descriptions/application.smd", p_handle) == 0,
+		smdReadFile("../../smd-example/descriptions/application.smd", p_handle) == 0,
 		"application.smd: failed reading source file",
 		return -1
 	);
@@ -67,7 +67,7 @@ int main(void) {
 	//SECOND FILE
 	//
 	smdError(
-		smdReadFile("../smd-sample/descriptions/scene.smd", p_handle) == 0,
+		smdReadFile("../../smd-example/descriptions/scene.smd", p_handle) == 0,
 		"scene.smd: failed reading source file",
 		return -1
 	);
@@ -150,7 +150,7 @@ int main(void) {
 
 	smdDebugPrintExportHandle(p_export);
 
-	smdWriteFile(p_export, "../smd-sample/descriptions/write.smd");
+	smdWriteFile(p_export, "../../smd-example/descriptions/write.smd");
 
 	smdExportHandleRelease(p_export);
 

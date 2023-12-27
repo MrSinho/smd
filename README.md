@@ -2,13 +2,16 @@
 
 A simple `.smd` file format interpreter and serializer, which is a convenient alternative from other serialization formats such as yaml and json, and - in my opinion - it also feels much more familiar with the C programming language.
 
+![](.shci/linux/linux-exit-code.svg)
+![](.shci/windows/windows-exit-code.svg)
+
 ## Clone and build
 
 ```bash
 git clone https://github.com/mrsinho/smd.git
 mkdir build
 cd build
-cmake .. -DSMD_BUILD_SAMPLE=ON
+cmake .. -DSMD_BUILD_EXAMPLE=ON
 cmake --build .
 ```
 

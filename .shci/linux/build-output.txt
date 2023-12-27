@@ -1,0 +1,11 @@
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /mnt/d/home/desktop/github/smd/build/linux
+Scanning dependencies of target smd
+[ 25%] Building C object CMakeFiles/smd.dir/smd/src/smd.c.o
+[ 50%] Linking C static library ../../bin/linux/libsmd.a
+[ 50%] Built target smd
+Scanning dependencies of target smd-example
+[ 75%] Building C object CMakeFiles/smd-example.dir/smd-example/src/smd-example.c.o
+[100%] Linking C executable ../../bin/linux/smd-example
+[100%] Built target smd-example

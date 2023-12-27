@@ -1,0 +1,16 @@
+-- Configuring done (0.1s)
+-- Generating done (0.1s)
+-- Build files have been written to: D:/home/desktop/github/smd/build/windows
+CMake is re-running because D:/home/desktop/github/smd/build/windows/CMakeFiles/generate.stamp is out-of-date.
+  the file 'D:/home/desktop/github/smd/build/windows/CMakeFiles/3.26.4/CMakeCCompiler.cmake'
+  is newer than 'D:/home/desktop/github/smd/build/windows/CMakeFiles/generate.stamp.depend'
+  result='-1'
+-- Configuring done (0.1s)
+-- Generating done (0.2s)
+-- Build files have been written to: D:/home/desktop/github/smd/build/windows
+[ 25%] Building C object CMakeFiles/smd.dir/smd/src/smd.c.obj
+[ 50%] Linking C static library D:\home\desktop\github\smd\bin\windows\libsmd.a
+[ 50%] Built target smd
+[ 75%] Building C object CMakeFiles/smd-example.dir/smd-example/src/smd-example.c.obj
+[100%] Linking C executable D:\home\desktop\github\smd\bin\windows\smd-example.exe
+[100%] Built target smd-example

@@ -1,0 +1,23 @@
+Hit:1 http://deb.debian.org/debian bullseye InRelease
+Get:2 http://deb.debian.org/debian bullseye-updates InRelease [44.1 kB]
+Get:3 http://security.debian.org/debian-security bullseye-security InRelease [48.4 kB]
+Get:4 http://ftp.debian.org/debian bullseye-backports InRelease [49.0 kB]
+Get:5 http://deb.debian.org/debian bullseye-updates/main amd64 Packages.diff/Index [25.2 kB]
+Get:6 http://deb.debian.org/debian bullseye-updates/main amd64 Packages T-2023-12-26-1404.09-F-2023-12-26-1404.09.pdiff [198 B]
+Get:6 http://deb.debian.org/debian bullseye-updates/main amd64 Packages T-2023-12-26-1404.09-F-2023-12-26-1404.09.pdiff [198 B]
+Get:7 http://ftp.debian.org/debian bullseye-backports/main amd64 Packages.diff/Index [63.3 kB]
+Get:8 http://ftp.debian.org/debian bullseye-backports/main amd64 Packages T-2023-12-25-1404.11-F-2023-12-25-1404.11.pdiff [1,401 B]
+Get:8 http://ftp.debian.org/debian bullseye-backports/main amd64 Packages T-2023-12-25-1404.11-F-2023-12-25-1404.11.pdiff [1,401 B]
+Fetched 232 kB in 1s (177 kB/s)
+Reading package lists...
+Building dependency tree...
+Reading state information...
+39 packages can be upgraded. Run 'apt list --upgradable' to see them.
+Reading package lists...
+Building dependency tree...
+Reading state information...
+cmake is already the newest version (3.18.4-2+deb11u1).
+gcc is already the newest version (4:10.2.1-1).
+make is already the newest version (4.3-4.1).
+libc6-dev is already the newest version (2.31-13+deb11u7).
+0 upgraded, 0 newly installed, 0 to remove and 39 not upgraded.
