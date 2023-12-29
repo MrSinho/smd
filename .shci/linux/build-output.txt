@@ -1,3 +1,13 @@
+-- The C compiler identification is GNU 10.2.1
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- SMD_VERSION       : pre-release
+-- SMD_ROOT_DIR      : /mnt/d/home/desktop/github/smd
+-- SMD_BINARIES_DIR  : /mnt/d/home/desktop/github/smd/bin
+-- SMD_BUILD_EXAMPLE : ON
 -- Configuring done
 -- Generating done
 -- Build files have been written to: /mnt/d/home/desktop/github/smd/build/linux

@@ -13,7 +13,7 @@ max frequency : 3500.0 MHz
 cores         : 4
 ```
 
-build ran for `27.94 s` and terminated with exit code `0`
+build ran for `33.67 s` and terminated with exit code `0`
 
 ---
 
@@ -66,9 +66,10 @@ Warnings:
     
 ```bash
 > .shci/windows/build-output.txt (
-    mkdir build
-    mkdir build/windows
-    cd    build/windows
+	mkdir build
+	cd    build
+	mkdir windows
+	cd    windows
 
     cmake ../../ -DSMD_BUILD_EXAMPLE=ON
     cmake --build .
@@ -77,28 +78,37 @@ Warnings:
 ```
 
 ```bash
--- Configuring done (0.1s)
+-- Building for: Visual Studio 17 2022
+-- Selecting Windows SDK version 10.0.22000.0 to target Windows 10.0.22621.
+-- The C compiler identification is MSVC 19.37.32822.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: D:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.37.32822/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- SMD_VERSION       : pre-release
+-- SMD_ROOT_DIR      : D:/home/desktop/github/smd
+-- SMD_BINARIES_DIR  : D:/home/desktop/github/smd/bin
+-- SMD_BUILD_EXAMPLE : ON
+-- Configuring done (6.1s)
 -- Generating done (0.1s)
 -- Build files have been written to: D:/home/desktop/github/smd/build/windows
-CMake is re-running because D:/home/desktop/github/smd/build/windows/CMakeFiles/generate.stamp is out-of-date.
-  the file 'D:/home/desktop/github/smd/build/windows/CMakeFiles/3.26.4/CMakeCCompiler.cmake'
-  is newer than 'D:/home/desktop/github/smd/build/windows/CMakeFiles/generate.stamp.depend'
-  result='-1'
--- Configuring done (0.1s)
--- Generating done (0.2s)
--- Build files have been written to: D:/home/desktop/github/smd/build/windows
-[ 25%] Building C object CMakeFiles/smd.dir/smd/src/smd.c.obj
-[ 50%] Linking C static library D:\home\desktop\github\smd\bin\windows\libsmd.a
-[ 50%] Built target smd
-[ 75%] Building C object CMakeFiles/smd-example.dir/smd-example/src/smd-example.c.obj
-[100%] Linking C executable D:\home\desktop\github\smd\bin\windows\smd-example.exe
-[100%] Built target smd-example
+Versione di MSBuild L17.7.2+d6990bcfa per .NET Framework
+
+  Checking Build System
+  Building Custom Rule D:/home/desktop/github/smd/CMakeLists.txt
+  smd.c
+  smd.vcxproj -> D:\home\desktop\github\smd\bin\windows\Debug\smd.lib
+  Building Custom Rule D:/home/desktop/github/smd/CMakeLists.txt
+  smd-example.c
+  smd-example.vcxproj -> D:\home\desktop\github\smd\bin\windows\Debug\smd-example.exe
+  Building Custom Rule D:/home/desktop/github/smd/CMakeLists.txt
 
 ```
 
 ---
     
-build ran for `27.94 s` and terminated with exit code `0`
+build ran for `33.67 s` and terminated with exit code `0`
 
 ---
 

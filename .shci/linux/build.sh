@@ -1,7 +1,8 @@
 function BUILD {
 	mkdir build
-	mkdir build/linux
-	cd build/linux
+	cd    build
+	mkdir linux
+	cd    linux
 
 	cmake ../../ -DSMD_BUILD_EXAMPLE=ON
 	cmake --build .
