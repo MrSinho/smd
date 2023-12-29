@@ -13,7 +13,7 @@ max frequency : 0.0 MHz
 cores         : 4
 ```
 
-build ran for `57.91 s` and terminated with exit code `0`
+build ran for `14.03 s` and terminated with exit code `0`
 
 ---
 
@@ -29,16 +29,9 @@ PREREQUISITES > .shci/linux/prerequisites-output.txt
 
 ```bash
 Hit:1 http://deb.debian.org/debian bullseye InRelease
-Get:2 http://deb.debian.org/debian bullseye-updates InRelease [44.1 kB]
-Get:3 http://security.debian.org/debian-security bullseye-security InRelease [48.4 kB]
-Get:4 http://ftp.debian.org/debian bullseye-backports InRelease [49.0 kB]
-Get:5 http://deb.debian.org/debian bullseye-updates/main amd64 Packages.diff/Index [25.2 kB]
-Get:6 http://deb.debian.org/debian bullseye-updates/main amd64 Packages T-2023-12-26-1404.09-F-2023-12-26-1404.09.pdiff [198 B]
-Get:6 http://deb.debian.org/debian bullseye-updates/main amd64 Packages T-2023-12-26-1404.09-F-2023-12-26-1404.09.pdiff [198 B]
-Get:7 http://ftp.debian.org/debian bullseye-backports/main amd64 Packages.diff/Index [63.3 kB]
-Get:8 http://ftp.debian.org/debian bullseye-backports/main amd64 Packages T-2023-12-25-1404.11-F-2023-12-25-1404.11.pdiff [1,401 B]
-Get:8 http://ftp.debian.org/debian bullseye-backports/main amd64 Packages T-2023-12-25-1404.11-F-2023-12-25-1404.11.pdiff [1,401 B]
-Fetched 232 kB in 1s (177 kB/s)
+Hit:2 http://deb.debian.org/debian bullseye-updates InRelease
+Hit:3 http://security.debian.org/debian-security bullseye-security InRelease
+Hit:4 http://ftp.debian.org/debian bullseye-backports InRelease
 Reading package lists...
 Building dependency tree...
 Reading state information...
@@ -59,8 +52,9 @@ libc6-dev is already the newest version (2.31-13+deb11u7).
 ```bash
 function BUILD {
 	mkdir build
-	mkdir build/linux
-	cd build/linux
+	cd    build
+	mkdir linux
+	cd    linux
 
 	cmake ../../ -DSMD_BUILD_EXAMPLE=ON
 	cmake --build .
@@ -71,6 +65,16 @@ BUILD > .shci/linux/build-output.txt
 ```
 
 ```bash
+-- The C compiler identification is GNU 10.2.1
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- SMD_VERSION       : pre-release
+-- SMD_ROOT_DIR      : /mnt/d/home/desktop/github/smd
+-- SMD_BINARIES_DIR  : /mnt/d/home/desktop/github/smd/bin
+-- SMD_BUILD_EXAMPLE : ON
 -- Configuring done
 -- Generating done
 -- Build files have been written to: /mnt/d/home/desktop/github/smd/build/linux
@@ -87,7 +91,7 @@ Scanning dependencies of target smd-example
 
 ---
     
-build ran for `57.91 s` and terminated with exit code `0`
+build ran for `14.03 s` and terminated with exit code `0`
 
 ---
 
